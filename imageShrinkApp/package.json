@@ -1,0 +1,16 @@
+{
+  "name": "imageshrinkapp",
+  "version": "1.0.0",
+  "description": "App for Image Optimization",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --exec electron ."
+  },
+  "author": "RayeEThompson",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.1.1",
+    "nodemon": "^2.0.6"
+  }
+}
