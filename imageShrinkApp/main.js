@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 
 process.env.NODE_ENV = "development";
 
@@ -26,18 +26,24 @@ function createMainWindow() {
 }
 
 //About Window
+let aboutWindow;
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    title: "About ImageShrink",
+    width: 300,
+    height: 300,
+    icon: `${__dirname}/assets/icons/Icon_256x256.png`,
+    resizable: false,
+    backgroundColor: "white",
+  });
+  aboutWindow.loadFile("./app/about.html");
+}
 
 app.on("ready", () => {
   createMainWindow();
   // create menu from template
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
-  // create global shortcuts
-  globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
-  globalShortcut.register(isMac ? "Command+Alt+I" : "Ctrl+Shift+I", () =>
-    mainWindow.toggleDevTools()
-  );
-
   mainWindow.on("ready", () => (mainWindow = null));
 });
 
@@ -45,7 +51,19 @@ app.on("ready", () => {
   To create a menu, it is an array of objects.
 */
 const menu = [
-  ...(isMac ? [{ role: "appMenu" }] : []),
+  ...(isMac
+    ? [
+        {
+          label: app.name,
+          submenu: [
+            {
+              label: "About",
+              click: createAboutWindow,
+            },
+          ],
+        },
+      ]
+    : []),
   {
     role: "fileMenu",
   },
