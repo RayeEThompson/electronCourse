@@ -25,6 +25,8 @@ function createMainWindow() {
   mainWindow.loadFile("./app/index.html");
 }
 
+//About Window
+
 app.on("ready", () => {
   createMainWindow();
   // create menu from template
@@ -47,6 +49,20 @@ const menu = [
   {
     role: "fileMenu",
   },
+  //create Developer Menu in Dev Mode
+  ...(isDev
+    ? [
+        {
+          label: Developer,
+          submenu: [
+            { role: "reload" },
+            { role: "forcereload" },
+            { type: "seperator" },
+            { role: "toggledevtools" },
+          ],
+        },
+      ]
+    : []),
 ];
 
 //Quit when all windows are closed.
