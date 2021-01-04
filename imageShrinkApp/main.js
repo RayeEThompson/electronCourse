@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 
 process.env.NODE_ENV = "development";
 
@@ -13,6 +13,7 @@ function createMainWindow() {
     height: 500,
     icon: `${__dirname}/assets/icons/Icon_256x256.png`,
     resizable: isDev ? true : false,
+    backgroundColor: "white",
   });
   /*
     There are two ways to load the index html file.
@@ -24,7 +25,36 @@ function createMainWindow() {
   mainWindow.loadFile("./app/index.html");
 }
 
-app.on("ready", createMainWindow);
+app.on("ready", () => {
+  createMainWindow();
+  // create menu from template
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
+  // create global shortcuts
+  globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
+  globalShortcut.register(isMac ? "Command+Alt+I" : "Ctrl+Shift+I", () =>
+    mainWindow.toggleDevTools()
+  );
+
+  mainWindow.on("ready", () => (mainWindow = null));
+});
+
+/*
+  To create a menu, it is an array of objects.
+*/
+const menu = [
+  ...(isMac ? [{ role: "appMenu" }] : []),
+  {
+    label: "File",
+    submenu: [
+      {
+        label: "Quit",
+        accelerator: "CmdOrCtrl+W",
+        click: () => app.quit(),
+      },
+    ],
+  },
+];
 
 //Quit when all windows are closed.
 app.on("window-all-closed", () => {
